@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+    <style>
+      label {
+        display: inline-block;
+        width: 80px;
+      }
+
+      .container {
+        padding: 20px 10px;
+      }
+      .inputGroup {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+
+  <body class="container">
+    <a href="/voter.html">Go to voter</a>
+    <div class="inputGroup">
+      <label for="">Name</label> <input id="Namebox" type="text" />
+    </div>
+    <div class="inputGroup">
+      <label for="">RollNo</label><input id="Rollbox" type="text" />
+    </div>
+    <div class="inputGroup">
+      <label for="">Section</label><input id="Secbox" type="text" />
+    </div>
+
+    <hr />
+    <button id="insertBtn">INSERT</button>
+    <button id="selectBtn">SELECT</button>
+    <button id="updateBtn">UPDATE</button>
+    <button id="deleteBtn">DELETE</button>
+
+    <!-- firebase config -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyAy-gnBdyMC9TPMyHXF6xuX5CT1Xv79ggQ",
+        authDomain: "votersystem-test.firebaseapp.com",
+        projectId: "votersystem-test",
+        storageBucket: "votersystem-test.appspot.com",
+        messagingSenderId: "699765836267",
+        appId: "1:699765836267:web:5128f71f39b998e14071ae",
+        measurementId: "G-CCFMND4ER7",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      import {
+        getDatabase,
+        ref,
+        set,
+        child,
+        update,
+        get,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+
+      
+      const db = getDatabase();
+
+      // references
+      var namebox = document.getElementById("Namebox");
+      var rollbox = document.getElementById("Rollbox");
+      var secbox = document.getElementById("Secbox");
+
+      var insertButton = document.getElementById("insertBtn");
+      var selectBtn = document.getElementById("selectBtn");
+      var updateBtn = document.getElementById("updateBtn");
+      var deleteBtn = document.getElementById("deleteBtn");
+
+      function InsertData() {
+        set(ref(db, "Data/" + rollbox.value), {
+          Name: namebox.value,
+          RollNo: rollbox.value,
+          Section: secbox.value,
+        })
+          .then(() => {
+            alert("Data stored successfully");
+          })
+          .catch((error) => {
+            alert("Error" + error);
+          });
+      }
+      window.addEventListener("DOMContentLoaded", async (e) => {
+        const dbref = ref(db);
+        get(dbref, "Data/").then((snapshot) => {
+          console.log(snapshot.val());
+        });
+        // getTasks((querySnapshot) => {
+        //     taskToDo.innerHTML = '';
+        //     querySnapshot.forEach(doc => {
+        //         console.log(doc.data());
+        //         // const if_url = `<a href="${doc.data().url}">URL de tarea</a>`
+        //         // taskToDo.innerHTML += `
+        //         //     <div>
+        //         //         <h4>${doc.data().name}</h4>
+        //         //         <p>${doc.data().description}</p>
+        //         //         ${doc.data().url ?
+        //         //             if_url
+        //         //             : ''
+        //         //         }
+        //         //     </div>
+        //         // `
+        //     });
+        // });
+      });
+
+      //   function SelectData(){
+      //       const dbref =ref(db)
+      //       get(child(dbref,"Data/" + rollbox.value)).then((snapshot)=>{
+      //           if(snapshot.exists())
+      //       })
+      //   }
+      function test() {
+        console.log(`{
+                  Name:${namebox.value},
+                    No:${rollbox.value},
+                      Section:${secbox.value},
+
+
+
+              }`);
+      }
+
+      insertButton.addEventListener("click", InsertData);
+    </script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+    <style>
+      label {
+        display: inline-block;
+        width: 80px;
+      }
+
+      .container {
+        padding: 20px 10px;
+      }
+      .inputGroup {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+
+  <body class="container">
+    <a href="/voter.html">Back to home</a>
+
+    <div class="container m-2 border border-primary rounded">
+      <h2>Candidates</h2>
+      <div class="row">
+        <div class="col">
+          <div
+            class="flex justify-content-between border border-dark rounded m-2 p-2"
+            style="width: 18rem"
+          >
+            <h4 class="mb-4" id="cand-1">Mary Karanja</h4>
+            <button class="btn btn-sm btn-success ml-4 vote-btn" id="cand-1-btn">
+              vote
+            </button>
+          </div>
+          <div
+            class="flex justify-content-between border border-dark rounded m-2 p-2"
+            style="width: 18rem"
+          >
+            <h4 class="mb-4" id="cand-2">Lona Kibet</h4>
+            <button class="btn btn-sm btn-success ml-4 vote-btn" id="cand-2-btn">
+              vote
+            </button>
+          </div>
+          <div
+            class="flex justify-content-between border border-dark rounded m-2 p-2"
+            style="width: 18rem"
+          >
+            <h4 class="mb-4" id="cand-3">Kent Oloo</h4>
+            <button class="btn btn-sm btn-success ml-4 vote-btn" id="cand-3-btn">
+              vote
+            </button>
+          </div>
+          <div
+            class="flex justify-content-between border border-dark rounded m-2 p-2"
+            style="width: 18rem"
+          >
+            <h4 class="mb-4" id="cand-4">Smith Luiz</h4>
+            <button class="btn btn-sm btn-success ml-4 vote-btn" id="cand-4-btn">
+              vote
+            </button>
+          </div>
+        </div>
+        <div class="col ">
+          <p class="h3">You have selected to vote for  candidate </p>
+         <span class="h4"> Name :</labe>
+         <span class="h4 text-primary" id="selectedCandText"></span>
+
+         <p class="h4 mt-5">Please add your name </p>
+          <div class="form-group">
+  
+    <input type="text" class="form-control" id="voter-name" >
+ 
+  </div>
+
+  <button class="mt-3 btn btn-primary" id="submit">Submit</button>
+
+
+        </div>
+      </div>
+    </div>
+
+ 
+
+    <!-- firebase config -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+    
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    
+
+
+
+      // firebase config
+      // ADD CODE HERE
+
+      
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+  
+      import {
+        getDatabase,
+        ref,
+        set,
+        child,
+        update,
+        get,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+      const db = getDatabase();
+
+      // references
+      let selectedCandidate =""
+      let allVoterData=[]
+      var displayedCan = document.getElementById("selectedCandText")
+      var  cand_1= document.getElementById("cand-1");
+      var  cand_2= document.getElementById("cand-2");
+      var  cand_3= document.getElementById("cand-3");
+      var  cand_4= document.getElementById("cand-4");
+      var  submitBtn= document.getElementById("submit");
+        var voter_name = document.getElementById("voter-name");
+     
+
+      var voteBnt_1 = document.getElementById("cand-1-btn");
+      var voteBnt_2 = document.getElementById("cand-2-btn");
+      var voteBnt_3 = document.getElementById("cand-3-btn");
+      var voteBnt_4 = document.getElementById("cand-4-btn");
+      var voteBnts = document.getElementsByClassName("vote-btn");
+
+
+
+      voteBnt_1.addEventListener('click',()=>{
+          selectedCandidate = cand_1.innerText
+          displayedCan.innerHTML=selectedCandidate
+      
+
+       
+      })
+      voteBnt_2.addEventListener('click',()=>{
+          selectedCandidate = cand_2.innerText
+          displayedCan.innerHTML=selectedCandidate
+  
+       
+      })
+      voteBnt_3.addEventListener('click',()=>{
+          selectedCandidate = cand_3.innerText
+          displayedCan.innerHTML=selectedCandidate
+       
+      })
+      voteBnt_4.addEventListener('click',()=>{
+          selectedCandidate = cand_4.innerText
+          displayedCan.innerHTML=selectedCandidate
+       
+      })
+
+
+       function InsertData(voterData) {
+        set(ref(db, "voterData/" + voter_name.value), voterData)
+          .then(() => {
+            alert("You have successfull voted");
+          })
+          .catch((error) => {
+            alert("Error" + error);
+          });
+      }
+
+
+
+      submitBtn.addEventListener('click',async ()=>{
+
+      const voted = allVoterData.some(el => el.Votername.toLowerCase() === voter_name.value.toLowerCase());
+      
+      
+      if(voted){
+        alert("You have already voted")
+      }else{
+          if(selectedCandidate.length === 0){
+           alert("Please select candidate")
+         }else if(voter_name.value.length ===0){
+           alert("Please Add you name")
+         }else{
+           let voterData={
+              Votername: voter_name.value,
+          Candidate:selectedCandidate
+           }
+       await InsertData(voterData)
+
+        const dbref = ref(db);
+        get(dbref, "voterData/").then((snapshot) => {
+          console.log(typeof snapshot.val().voterData);
+        });
+         }
+      }
+       
+       
+      })
+    
+
+     
+      window.addEventListener("DOMContentLoaded", async (e) => {
+        const dbref = ref(db);
+       await get(dbref, "voterData/").then((snapshot) => {
+
+
+          Object.keys(snapshot.val().voterData).map(function(key, index) {
+  allVoterData.push(snapshot.val().voterData[key])
+});
+          
+          console.log( allVoterData);
+        });
+        // getTasks((querySnapshot) => {
+        //     taskToDo.innerHTML = '';
+        //     querySnapshot.forEach(doc => {
+        //         console.log(doc.data());
+        //         // const if_url = `<a href="${doc.data().url}">URL de tarea</a>`
+        //         // taskToDo.innerHTML += `
+        //         //     <div>
+        //         //         <h4>${doc.data().name}</h4>
+        //         //         <p>${doc.data().description}</p>
+        //         //         ${doc.data().url ?
+        //         //             if_url
+        //         //             : ''
+        //         //         }
+        //         //     </div>
+        //         // `
+        //     });
+        // });
+      });
+
+      //   function SelectData(){
+      //       const dbref =ref(db)
+      //       get(child(dbref,"Data/" + rollbox.value)).then((snapshot)=>{
+      //           if(snapshot.exists())
+      //       })
+      //   }
+      function test() {
+        console.log(`{
+                  Name:${namebox.value},
+                    No:${rollbox.value},
+                      Section:${secbox.value},
+
+
+
+              }`);
+      }
+
+  
+    </script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
